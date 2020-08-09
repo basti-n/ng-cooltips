@@ -1,0 +1,15 @@
+@import '~@angular/cdk/overlay-prebuilt.css';
+@import '~@angular/cdk/a11y-prebuilt.css';
+
+.arrow-down {
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid black;
+  }
+}

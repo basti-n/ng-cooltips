@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'ng-cooltips',
@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
       {{ text }}
     </p>
   `,
-  styleUrls: ['./styles.scss'],
+  styleUrls: ['../styles.scss'],
   styles: [
     `
       p {
@@ -18,6 +18,7 @@ import { Component, Input } from '@angular/core';
       }
     `,
   ],
+  encapsulation: ViewEncapsulation.None
 })
 export class NgCooltipsComponent {
   @Input() text: string;

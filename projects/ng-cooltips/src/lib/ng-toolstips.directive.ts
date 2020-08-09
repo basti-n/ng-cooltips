@@ -54,11 +54,15 @@ export class NgCooltipsDirective implements OnInit {
 
   ngOnInit() {
     this.initOverlay();
+
+    const styles = window.getComputedStyle(this.elementRef.nativeElement)
+      .margin;
+    console.log({ styles });
   }
 
   initOverlay() {
     this.overlayRef = this.overlay.create({
-      positionStrategy: this.configurePosition()
+      positionStrategy: this.configurePosition(),
     });
   }
 
@@ -70,7 +74,12 @@ export class NgCooltipsDirective implements OnInit {
           originX: 'center',
           originY: 'top',
           overlayX: 'center',
-          overlayY: 'top',
+          overlayY: 'bottom',
+          panelClass: 'arrow-down',
+          offsetY:
+            parseFloat(
+              window.getComputedStyle(this.elementRef.nativeElement).marginTop
+            ) / 2,
         },
         {
           originX: 'center',

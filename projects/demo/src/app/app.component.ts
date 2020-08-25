@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
         Welcome to {{ title }}!
       </h1>
       <h3 [ngCooltips]="prettyTooltip">
-        Deutsche Bahn
+        x Deutsche Bahn
       </h3>
     </div>
 

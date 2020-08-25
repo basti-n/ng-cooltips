@@ -1,96 +1,45 @@
 import {
   Directive,
   Input,
-  TemplateRef,
   ElementRef,
   HostListener,
-  OnInit,
-  ComponentRef,
   ViewContainerRef,
 } from '@angular/core';
-import {
-  Overlay,
-  OverlayRef,
-  OverlayPositionBuilder,
-  PositionStrategy,
-} from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
-import { NgCooltipsComponent } from './ng-cooltips.component';
+import { OverlayRef } from '@angular/cdk/overlay';
+import { OverlayService } from './services/overlay.service';
+import { TooltipMode, CooltipConfig } from './models';
 
 @Directive({
   selector: '[ngCooltips]',
   exportAs: 'ngCooltips',
 })
-export class NgCooltipsDirective implements OnInit {
-  @Input() content: string | TemplateRef<any>;
+export class NgCooltipsDirective {
+  @Input('ngCooltips') content: TooltipMode;
+  @Input() cooltipConfig: CooltipConfig;
 
   private overlayRef: OverlayRef;
+
+  get host(): HTMLElement {
+    return this.elementRef.nativeElement;
+  }
 
   constructor(
     private elementRef: ElementRef,
     private viewContainerRef: ViewContainerRef,
-    private overlay: Overlay,
-    private overlayPositionBuilder: OverlayPositionBuilder
+    private overlayService: OverlayService
   ) {}
 
   @HostListener('mouseenter') show() {
-    if (typeof this.content === 'string') {
-      const tooltipRef: ComponentPortal<NgCooltipsComponent> = new ComponentPortal(
-        NgCooltipsComponent,
-        this.viewContainerRef
-      );
-
-      const tooltipComp: ComponentRef<NgCooltipsComponent> = this.overlayRef.attach(
-        tooltipRef
-      );
-
-      this.addContext(tooltipComp.instance, 'text', this.content);
-    }
-  }
-
-  @HostListener('mouseout') hide() {
-    this.overlayRef.detach();
-  }
-
-  ngOnInit() {
-    this.initOverlay();
-
-    const styles = window.getComputedStyle(this.elementRef.nativeElement)
-      .margin;
-    console.log({ styles });
-  }
-
-  initOverlay() {
-    this.overlayRef = this.overlay.create({
-      positionStrategy: this.configurePosition(),
+    this.overlayRef = this.overlayService.open({
+      content: this.content,
+      viewContainerRef: this.viewContainerRef,
+      cooltipConfig: this.cooltipConfig || {},
+      overlayConfig: {},
+      host: this.host,
     });
   }
 
-  configurePosition(): PositionStrategy {
-    return this.overlayPositionBuilder
-      .flexibleConnectedTo(this.elementRef)
-      .withPositions([
-        {
-          originX: 'center',
-          originY: 'top',
-          overlayX: 'center',
-          overlayY: 'bottom',
-          panelClass: 'arrow-down',
-          offsetY:
-            parseFloat(
-              window.getComputedStyle(this.elementRef.nativeElement).marginTop
-            ) / 2,
-        },
-        {
-          originX: 'center',
-          originY: 'bottom',
-          overlayX: 'end',
-          overlayY: 'center',
-        },
-      ]);
-  }
-
-  private addContext<T>(component: T, property: keyof T, value: any) {
-    component[property] = value;
+  @HostListener('mouseout') hide() {
+    this.overlayService.close(this.overlayRef);
   }
 }

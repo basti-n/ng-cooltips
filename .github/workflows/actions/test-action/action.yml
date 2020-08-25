@@ -1,0 +1,5 @@
+name: Hello World
+description: Prints Hello World to the console
+runs:
+  using: node12
+  main: index.js
